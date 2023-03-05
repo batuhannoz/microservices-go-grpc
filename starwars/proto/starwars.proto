@@ -1,0 +1,27 @@
+syntax="proto3";
+
+package sw_service;
+
+option go_package = "./proto";
+
+service StarWarsService {
+  // simple RPC
+  rpc GetRandomCharacter(NoParam) returns (Character);
+  // server streaming RPC
+  rpc GetSeveralRandomCharacter(CharacterCount) returns (stream Character);
+}
+
+message NoParam {};
+
+message Character {
+  string name = 1;
+  string homeworld = 2;
+  string imageURL = 3;
+};
+
+message CharacterCount {
+  string Count = 1;
+}
+
+
+
