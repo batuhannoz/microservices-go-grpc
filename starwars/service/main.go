@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/batuhannoz/microservices-go-grpc/starwars/service/db"
 	"github.com/batuhannoz/microservices-go-grpc/starwars/service/proto"
 	"google.golang.org/grpc"
 	"log"
@@ -9,7 +10,7 @@ import (
 )
 
 const (
-	port = ":8081"
+	port = ":3001"
 )
 
 type StarWarsServer struct {
@@ -17,19 +18,16 @@ type StarWarsServer struct {
 }
 
 func (s *StarWarsServer) RandomCharacter(ctx context.Context, req *proto.NoParam) (*proto.Character, error) {
+	c := db.GetRandomCharacter()
 	return &proto.Character{
-		Name:      "Luke Skywalker",
-		Homeworld: "tatooine",
-		ImageURL:  "https://vignette.wikia.nocookie.net/starwars/images/2/20/LukeTLJ.jpg",
+		Name:      c.Name,
+		Homeworld: c.Homeworld,
+		ImageURL:  c.Pic,
 	}, nil
 }
 
-func (s *StarWarsServer) RandomCharacterByCount(count *proto.CharacterCount, server proto.StarWarsService_RandomCharacterByCountServer) error {
-	// server.SendMsg()
-	return nil
-}
-
 func main() {
+	db.InitializeDB()
 	//listen on the port
 	lis, err := net.Listen("tcp", port)
 	if err != nil {

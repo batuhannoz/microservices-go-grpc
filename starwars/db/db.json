@@ -1,5 +1,4 @@
-{
-  "characters": [
+[
     {
       "id": 1,
       "name": "Luke Skywalker",
@@ -120,4 +119,3 @@
       "homeworld": "naboo"
     }
   ]
-}
