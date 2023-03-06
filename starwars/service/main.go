@@ -16,7 +16,7 @@ type StarWarsServer struct {
 	proto.StarWarsServiceServer
 }
 
-func (s *StarWarsServer) GetRandomCharacter(ctx context.Context, req *proto.NoParam) (*proto.Character, error) {
+func (s *StarWarsServer) RandomCharacter(ctx context.Context, req *proto.NoParam) (*proto.Character, error) {
 	return &proto.Character{
 		Name:      "Luke Skywalker",
 		Homeworld: "tatooine",
@@ -24,7 +24,7 @@ func (s *StarWarsServer) GetRandomCharacter(ctx context.Context, req *proto.NoPa
 	}, nil
 }
 
-func (s *StarWarsServer) GetSeveralRandomCharacter(count *proto.CharacterCount, server proto.StarWarsService_GetSeveralRandomCharacterServer) error {
+func (s *StarWarsServer) RandomCharacterByCount(count *proto.CharacterCount, server proto.StarWarsService_RandomCharacterByCountServer) error {
 	// server.SendMsg()
 	return nil
 }

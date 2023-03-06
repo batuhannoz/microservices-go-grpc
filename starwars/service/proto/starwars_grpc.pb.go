@@ -23,9 +23,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StarWarsServiceClient interface {
 	// simple RPC
-	GetRandomCharacter(ctx context.Context, in *NoParam, opts ...grpc.CallOption) (*Character, error)
+	RandomCharacter(ctx context.Context, in *NoParam, opts ...grpc.CallOption) (*Character, error)
 	// server streaming RPC
-	GetSeveralRandomCharacter(ctx context.Context, in *CharacterCount, opts ...grpc.CallOption) (StarWarsService_GetSeveralRandomCharacterClient, error)
+	RandomCharacterByCount(ctx context.Context, in *CharacterCount, opts ...grpc.CallOption) (StarWarsService_RandomCharacterByCountClient, error)
 }
 
 type starWarsServiceClient struct {
@@ -36,21 +36,21 @@ func NewStarWarsServiceClient(cc grpc.ClientConnInterface) StarWarsServiceClient
 	return &starWarsServiceClient{cc}
 }
 
-func (c *starWarsServiceClient) GetRandomCharacter(ctx context.Context, in *NoParam, opts ...grpc.CallOption) (*Character, error) {
+func (c *starWarsServiceClient) RandomCharacter(ctx context.Context, in *NoParam, opts ...grpc.CallOption) (*Character, error) {
 	out := new(Character)
-	err := c.cc.Invoke(ctx, "/sw_service.StarWarsService/GetRandomCharacter", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sw_service.StarWarsService/RandomCharacter", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *starWarsServiceClient) GetSeveralRandomCharacter(ctx context.Context, in *CharacterCount, opts ...grpc.CallOption) (StarWarsService_GetSeveralRandomCharacterClient, error) {
-	stream, err := c.cc.NewStream(ctx, &StarWarsService_ServiceDesc.Streams[0], "/sw_service.StarWarsService/GetSeveralRandomCharacter", opts...)
+func (c *starWarsServiceClient) RandomCharacterByCount(ctx context.Context, in *CharacterCount, opts ...grpc.CallOption) (StarWarsService_RandomCharacterByCountClient, error) {
+	stream, err := c.cc.NewStream(ctx, &StarWarsService_ServiceDesc.Streams[0], "/sw_service.StarWarsService/RandomCharacterByCount", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &starWarsServiceGetSeveralRandomCharacterClient{stream}
+	x := &starWarsServiceRandomCharacterByCountClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -60,16 +60,16 @@ func (c *starWarsServiceClient) GetSeveralRandomCharacter(ctx context.Context, i
 	return x, nil
 }
 
-type StarWarsService_GetSeveralRandomCharacterClient interface {
+type StarWarsService_RandomCharacterByCountClient interface {
 	Recv() (*Character, error)
 	grpc.ClientStream
 }
 
-type starWarsServiceGetSeveralRandomCharacterClient struct {
+type starWarsServiceRandomCharacterByCountClient struct {
 	grpc.ClientStream
 }
 
-func (x *starWarsServiceGetSeveralRandomCharacterClient) Recv() (*Character, error) {
+func (x *starWarsServiceRandomCharacterByCountClient) Recv() (*Character, error) {
 	m := new(Character)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -82,9 +82,9 @@ func (x *starWarsServiceGetSeveralRandomCharacterClient) Recv() (*Character, err
 // for forward compatibility
 type StarWarsServiceServer interface {
 	// simple RPC
-	GetRandomCharacter(context.Context, *NoParam) (*Character, error)
+	RandomCharacter(context.Context, *NoParam) (*Character, error)
 	// server streaming RPC
-	GetSeveralRandomCharacter(*CharacterCount, StarWarsService_GetSeveralRandomCharacterServer) error
+	RandomCharacterByCount(*CharacterCount, StarWarsService_RandomCharacterByCountServer) error
 	mustEmbedUnimplementedStarWarsServiceServer()
 }
 
@@ -92,11 +92,11 @@ type StarWarsServiceServer interface {
 type UnimplementedStarWarsServiceServer struct {
 }
 
-func (UnimplementedStarWarsServiceServer) GetRandomCharacter(context.Context, *NoParam) (*Character, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRandomCharacter not implemented")
+func (UnimplementedStarWarsServiceServer) RandomCharacter(context.Context, *NoParam) (*Character, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RandomCharacter not implemented")
 }
-func (UnimplementedStarWarsServiceServer) GetSeveralRandomCharacter(*CharacterCount, StarWarsService_GetSeveralRandomCharacterServer) error {
-	return status.Errorf(codes.Unimplemented, "method GetSeveralRandomCharacter not implemented")
+func (UnimplementedStarWarsServiceServer) RandomCharacterByCount(*CharacterCount, StarWarsService_RandomCharacterByCountServer) error {
+	return status.Errorf(codes.Unimplemented, "method RandomCharacterByCount not implemented")
 }
 func (UnimplementedStarWarsServiceServer) mustEmbedUnimplementedStarWarsServiceServer() {}
 
@@ -111,42 +111,42 @@ func RegisterStarWarsServiceServer(s grpc.ServiceRegistrar, srv StarWarsServiceS
 	s.RegisterService(&StarWarsService_ServiceDesc, srv)
 }
 
-func _StarWarsService_GetRandomCharacter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _StarWarsService_RandomCharacter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NoParam)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StarWarsServiceServer).GetRandomCharacter(ctx, in)
+		return srv.(StarWarsServiceServer).RandomCharacter(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sw_service.StarWarsService/GetRandomCharacter",
+		FullMethod: "/sw_service.StarWarsService/RandomCharacter",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StarWarsServiceServer).GetRandomCharacter(ctx, req.(*NoParam))
+		return srv.(StarWarsServiceServer).RandomCharacter(ctx, req.(*NoParam))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StarWarsService_GetSeveralRandomCharacter_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _StarWarsService_RandomCharacterByCount_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(CharacterCount)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(StarWarsServiceServer).GetSeveralRandomCharacter(m, &starWarsServiceGetSeveralRandomCharacterServer{stream})
+	return srv.(StarWarsServiceServer).RandomCharacterByCount(m, &starWarsServiceRandomCharacterByCountServer{stream})
 }
 
-type StarWarsService_GetSeveralRandomCharacterServer interface {
+type StarWarsService_RandomCharacterByCountServer interface {
 	Send(*Character) error
 	grpc.ServerStream
 }
 
-type starWarsServiceGetSeveralRandomCharacterServer struct {
+type starWarsServiceRandomCharacterByCountServer struct {
 	grpc.ServerStream
 }
 
-func (x *starWarsServiceGetSeveralRandomCharacterServer) Send(m *Character) error {
+func (x *starWarsServiceRandomCharacterByCountServer) Send(m *Character) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -158,14 +158,14 @@ var StarWarsService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*StarWarsServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetRandomCharacter",
-			Handler:    _StarWarsService_GetRandomCharacter_Handler,
+			MethodName: "RandomCharacter",
+			Handler:    _StarWarsService_RandomCharacter_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "GetSeveralRandomCharacter",
-			Handler:       _StarWarsService_GetSeveralRandomCharacter_Handler,
+			StreamName:    "RandomCharacterByCount",
+			Handler:       _StarWarsService_RandomCharacterByCount_Handler,
 			ServerStreams: true,
 		},
 	},

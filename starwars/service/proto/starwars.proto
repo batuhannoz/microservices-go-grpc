@@ -6,9 +6,9 @@ option go_package = "./proto";
 
 service StarWarsService {
   // simple RPC
-  rpc GetRandomCharacter(NoParam) returns (Character);
+  rpc RandomCharacter(NoParam) returns (Character);
   // server streaming RPC
-  rpc GetSeveralRandomCharacter(CharacterCount) returns (stream Character);
+  rpc RandomCharacterByCount(CharacterCount) returns (stream Character);
 }
 
 message NoParam {};
