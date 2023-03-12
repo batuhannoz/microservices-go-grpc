@@ -16,5 +16,3 @@ message Character {
   string homeworld = 2;
   string imageURL = 3;
 };
-
-
